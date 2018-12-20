@@ -11,8 +11,8 @@ var watch = require("gulp-watch"); // 监听文件变化
 var runSequence = require("run-sequence").use(gulp); // 实现逐个执行任务
 var gulpif = require("gulp-if"); // 条件判断
 var uglify = require("gulp-uglify"); // js 压缩
-var rev = require("gulp-rev-dxb"); // 生成版本号清单
-var revCollector = require("gulp-rev-collector-dxb"); // 替换成版本号文件
+var rev = require('gulp-rev-dxb');	// 生成版本号清单
+var revCollector = require('gulp-rev-collector-dxb');   // 替换成版本号文件
 var pump = require("pump");
 
 var rootPath = "src/";
@@ -29,19 +29,17 @@ function set_env(type) {
 }
 
 // 生成版本号清单
-gulp.task("rev", function() {
-    return gulp
-        .src(["./dist/js/**", "./dist/css/**"])
+gulp.task('rev', function() {
+    return gulp.src(['./dist/js/**', './dist/css/**'])
         .pipe(rev())
         .pipe(rev.manifest())
         .pipe(gulp.dest("./"));
 });
 // 添加版本号（路径替换）
-gulp.task("add_version", function() {
-    return gulp
-        .src(["./rev-manifest.json", "./dist/*.html"])
-        .pipe(revCollector()) // 根据.json文件 执行文件内js/css名的替换
-        .pipe(gulp.dest("./dist"));
+gulp.task('add_version', function() {
+    return gulp.src(['./rev-manifest.json', './dist/*.html'])
+        .pipe(revCollector())   // 根据.json文件 执行文件内js/css名的替换
+        .pipe(gulp.dest('./dist'));
 });
 
 gulp.task("browser", function() {
@@ -78,14 +76,12 @@ gulp.task("watch", function() {
 gulp.task("html", function() {
     return gulp
         .src(rootPath + "*.html")
-        .pipe(
-            htmlmin({
-                removeComments: true, // 清除HTML注释
-                collapseWhitespace: true, // 压缩HTML
-                minifyJS: true, // 压缩页面JS
-                minifyCSS: true // 压缩页面CSS
-            })
-        )
+        .pipe(htmlmin({ 
+            removeComments: true,       // 清除HTML注释
+            collapseWhitespace: true,   // 压缩HTML
+            minifyJS: true,             // 压缩页面JS
+            minifyCSS: true             // 压缩页面CSS
+        }))
         .pipe(gulp.dest("./dist")); //写入命令
 });
 
@@ -94,7 +90,7 @@ gulp.task("css_main", function() {
     return gulp
         .src("./src/css/**/*.css")
         .pipe(concat("main.min.css"))
-        .pipe(gulpif(env === "build", cleanCss({ compatibility: "ie8" }))) // 判断是否压缩压缩css
+        .pipe(gulpif(env === "build", cleanCss({compatibility: 'ie8'}))) // 判断是否压缩压缩css
         .pipe(gulp.dest("./dist/css"));
 });
 gulp.task("css_libs", function() {
@@ -154,8 +150,8 @@ gulp.task("build", function(cb) {
     runSequence(
         ["clean"],
         ["html", "js_libs", "js_main", "css_libs", "css_main", "images"],
-        ["rev"], // 所有文件打包完毕之后开始生成版本清单文件
-        ["add_version"], // 根据清单文件替换html里的资源文件
+        ['rev'], // 所有文件打包完毕之后开始生成版本清单文件
+        ['add_version'], // 根据清单文件替换html里的资源文件
         cb
     );
 });
